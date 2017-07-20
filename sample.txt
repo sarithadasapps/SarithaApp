@@ -1,0 +1,116 @@
+//HTTP Library
+ useLibrary 'org.apache.http.legacy'
+
+
+//Async Task
+
+ JSONParser jsonParser;
+    ProgressDialog pDialog;
+    int status;
+    Boolean printf=true;
+    String message = "";
+    JSONArray user_address = new JSONArray();
+
+    public class Getaddress extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Address_Book.this);
+            //pDialog.setMessage("Loading...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... arg0) {
+
+            List<NameValuePair> param = new ArrayList<NameValuePair>();
+
+            param.add(new BasicNameValuePair("email", ""+email));
+
+            jsonParser = new JSONParser();
+
+            JSONObject jsonobj = jsonParser.makeHttpRequest(ApplicationConstants.getshippingaddress, "POST", param);
+
+            if (printf)
+                Log.v("Sample", jsonobj.toString());
+
+            try {
+                status = jsonobj.getInt("status");
+                message = jsonobj.getString("message");
+                if (status == 1) {
+                    user_address=jsonobj.getJSONArray("user_address");
+                    for (int i=0;i<user_address.length();i++) {
+                        Feedcontent_addressbook fc=new Feedcontent_addressbook();
+                        JSONObject obj=user_address.getJSONObject(i);
+                        fc.setId(obj.getString("id"));
+                        fc.setName(obj.getString("fname"));
+                        fc.setContactaddress(obj.getString("mobile")+" - "+obj.getString("address_email"));
+                        fc.setAddress(obj.getString("address")+"\n"+obj.getString("city")+"\n"+obj.getString("state")+"\n"+obj.getString("zip"));
+                        feedsarray.add(fc);
+                    }
+                }
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (status == 1) {
+                CustomBaseAdapter_addressbook adapter = new CustomBaseAdapter_addressbook(Address_Book.this, feedsarray,-1);
+                addressbook_lv.setAdapter(adapter);
+            }else if(status==0){
+                Toast.makeText(Address_Book.this,message,Toast.LENGTH_LONG).show();
+
+            }else if (status==-1){
+                Toast.makeText(Address_Book.this,message,Toast.LENGTH_LONG).show();
+            }
+            if (pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
+        }
+    }
+
+
+//Validations
+
+firstname=firstname_et.getText().toString();
+                lastname=lastname_et.getText().toString();
+                pwd=password_et.getText().toString();
+                cpwd=confirm_password_et.getText().toString();
+                phno=mobileno_et.getText().toString();
+                email=email_et.getText().toString();
+                atpos = email.indexOf("@");
+                dotpos = email.lastIndexOf(".");
+
+                    if (firstname.equals("") && lastname.equals("") && pwd.equals("") && cpwd.equals("") && phno.equals("") && email.equals("") &&(!termsnconditions_switch.isChecked())) {
+                        Toast.makeText(Registration.this, "Please fill all required fields", Toast.LENGTH_LONG).show();
+                    } else if (firstname.equals("")) {
+                        Toast.makeText(Registration.this, "Please Enter your firstname", Toast.LENGTH_LONG).show();
+                   /* } else if (lastname.equals("")) {
+                        Toast.makeText(Registration.this, "Please Enter your lastname", Toast.LENGTH_LONG).show();*/
+                    } else if (pwd.equals("")) {
+                        Toast.makeText(Registration.this, "password must be atleast 8 characters", Toast.LENGTH_LONG).show();
+                    } else if (!isValidPassword(pwd)) {
+                        Toast.makeText(Registration.this, "password must be atleast 8 characters", Toast.LENGTH_LONG).show();
+                    } else if (!cpwd.equals(pwd)) {
+                        Toast.makeText(Registration.this, "Password and confirm password mismatched", Toast.LENGTH_LONG).show();
+                    } else if (phno.equals("")) {
+                        Toast.makeText(Registration.this, "Please Enter your Phone number", Toast.LENGTH_LONG).show();
+                    } else if (phno.length()!=10) {
+                        Toast.makeText(Registration.this, "Please Enter a valid Phone number", Toast.LENGTH_LONG).show();
+                    } else if (email.equals("")) {
+                        Toast.makeText(Registration.this, "Please Enter your Email address", Toast.LENGTH_LONG).show();
+                    } else if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length()) {
+                        Toast.makeText(Registration.this, "Please enter a valid Email address", Toast.LENGTH_LONG).show();
+                    }else if (!termsnconditions_switch.isChecked()){
+                        Toast.makeText(Registration.this,"Accept Terms and Conditions to register for PETDEAL",Toast.LENGTH_LONG).show();
+                    } else {
+                        new register().execute();
+                    }
+
