@@ -1,0 +1,87 @@
+   AlertDialog.Builder b = new AlertDialog.Builder(Reviews_Rating.this, R.style.MyAlertDialogStyle);
+                    b.setMessage("Please login to rate this item");
+                    b.setTitle("Alert Message!");
+                    b.setCancelable(false);
+                    b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(Reviews_Rating.this, Login.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            Reviews_Rating.this.startActivity(intent);
+                            overridePendingTransition(R.anim.slide_in_from_right, R.anim.fade_out);
+                            finish();
+
+                        }
+                    });
+                    b.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    b.show();
+                }else{
+                if (!rating.equals("0.0")){
+                    rating="0.0";
+                }
+                AlertDialog.Builder b = new AlertDialog.Builder(Reviews_Rating.this, R.style.MyAlertDialogStyle);
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view1 = inflater.inflate(R.layout.your_review, null);
+
+                TextView review_rating_tv = (TextView) view1.findViewById(R.id.review_rating_tv);
+                review_rating_tv.setTypeface(montserrat);
+                TextView title_tv = (TextView) view1.findViewById(R.id.title_tv);
+                title_tv.setTypeface(montserrat);
+                TextView review_name_tv = (TextView) view1.findViewById(R.id.review_name_tv);
+                review_name_tv.setTypeface(montserrat);
+                TextView review_email_tv = (TextView) view1.findViewById(R.id.review_email_tv);
+                review_email_tv.setTypeface(montserrat);
+                TextView review_comment_tv = (TextView) view1.findViewById(R.id.review_comment_tv);
+                review_comment_tv.setTypeface(montserrat);
+                final EditText review_name_et = (EditText) view1.findViewById(R.id.review_name_et);
+                review_name_et.setTypeface(proximanova);
+                final EditText review_email_et = (EditText) view1.findViewById(R.id.review_email_et);
+                review_email_et.setTypeface(proximanova);
+                review_email_et.setText(email);
+                final EditText review_comment_et = (EditText) view1.findViewById(R.id.review_comment_et);
+                review_comment_et.setTypeface(proximanova);
+                AppCompatRatingBar ratingbar = (AppCompatRatingBar) view1.findViewById(R.id.ratingbar);
+                ratingbar.setOnRatingBarChangeListener(new android.widget.RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(android.widget.RatingBar ratingBar, float v, boolean b) {
+                        rating = String.valueOf(ratingBar.getRating());
+                        Log.v("rating_review ", "" + rating);
+
+                    }
+                });
+                b.setView(view1);
+                b.setCancelable(false);
+                b.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                username = review_name_et.getText().toString();
+                                email2 = review_email_et.getText().toString();
+                                comment = review_comment_et.getText().toString();
+                                if (username.equals("") && rating.equals("0.0")) {
+                                    Toast.makeText(Reviews_Rating.this, "Please fill all required fields", Toast.LENGTH_LONG).show();
+                                } else if (username.equals("")) {
+                                    Toast.makeText(Reviews_Rating.this, "Please enter your name", Toast.LENGTH_LONG).show();
+                                } else if (rating.equals("0.0")) {
+                                    Toast.makeText(Reviews_Rating.this, "Please rate this product", Toast.LENGTH_LONG).show();
+                                } else {
+                                    new Addreview().execute();
+                                }
+                                // new Addreview().execute();
+                            }
+                        }
+                );
+                b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                b.show();
+            }
