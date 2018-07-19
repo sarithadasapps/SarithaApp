@@ -1,0 +1,46 @@
+// Calling Http LLibrary
+
+
+
+ /**
+     * this method is used for post
+     */
+    private void callToAPIPost() {
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("type", "json");
+        DemoHttpHandler demoHttpHandler = new DemoHttpHandler(ActivityLogin.this, this, "Please wait....", 1);
+        RequestParams params = new RequestParams();
+        //grant_type=password&username=preeti@yopmail.com&password=Qwerty1@
+        params.add("grant_type", "password");
+        params.add("username", username);
+        params.add("password", password);
+        HttpClients.post(context, NetworkConstants.URL.Login, params, demoHttpHandler, headers);
+    }
+
+    /**
+     * this method is used for get
+     */
+    private void callToAPIGet() {
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("type", "json");
+        DemoHttpHandler demoHttpHandler = new DemoHttpHandler(ActivityLogin.this, this, "Please wait...!", 2);
+        HttpClients.get(context, "Your URL", null, demoHttpHandler, headers);
+    }
+
+
+//include Http Library
+
+ compile files('libs/commons-io-2.4.jar')
+    compile files('libs/httpclient-4.1.jar')
+    compile files('libs/httpmime-4.1.3.jar')
+    compile files('libs/http-core-4.1.jar.zip')
+
+  compile('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    compile('com.google.apis:google-api-services-gmail:v1-rev83-1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+
+ //HTTP Library
+    useLibrary 'org.apache.http.legacy'
