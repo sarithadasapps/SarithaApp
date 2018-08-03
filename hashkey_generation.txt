@@ -1,0 +1,21 @@
+
+      
+**** Process of Hashkey generation for facebook integration ****
+
+1.open cmd(command prompt)
+2.C:\Program Files\Android\Android Studio\jre\bin -->give this path
+3.Append --> 
+keytool -exportcert -alias androiddebugkey -keystore C:\Users\USER\.android\debug.keystore | C:\OpenSSL\bin\openssl sha1 -binary |C:\OpenSSL\bin\openssl base64
+
+result:
+enter password: iprism@2015\
+
+//debug result
+...> Invalid key hash. The key hash yLM+4mbECe9nRG/9idPsTCLxy0Y= does not match any stored key hashes. Configure your app key hashes at https://developers.facebook.com/apps/148630802410681/
+
+
+"yLM+4mbECe9nRG/9idPsTCLxy0Y=" include in project.
+
+then "ga0RGNYHvNM5d0SLGQfpQWAPGJ8=" hashkey will be generated.
+
+
